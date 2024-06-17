@@ -18,10 +18,10 @@ public class User {
 
     @NotBlank(message = "username cannot be blank ")
     private String username;
-    @NotBlank(message = "password cannot be blank")
-    private String password;
     @NotBlank(message = "email cannot be blank ")
     private String email;
+    @NotBlank(message = "password cannot be blank")
+    private String password;
     @NotBlank(message = "date of birth cannot be blank ")
     private String dateOfBirth;
     @NotBlank(message = "firstname cannot be blank ")
@@ -34,10 +34,10 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password, String email, String dateOfBirth, String firstName, String lastName) {
+    public User(String username, String email, String password, String dateOfBirth, String firstName, String lastName) {
         this.username = username;
-        this.password = password;
         this.email = email;
+        this.password = password;
         this.dateOfBirth = dateOfBirth;
         this.firstName = firstName;
         this.lastName = lastName;

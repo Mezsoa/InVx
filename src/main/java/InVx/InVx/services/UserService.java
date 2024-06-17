@@ -25,20 +25,12 @@ public class UserService {
         return userRepository.findAll();
     }
 
-//    // Gets both username and email on all accounts
-//    public List<String> getAllUsernamesAndEmails() {
-//
-//        try {
-//            return userRepository.findAll()
-//                    .stream()
-//                    .map(User::getUsername)
-//                    .collect(Collectors.toList());
-//        }
-//    }
-
 
     public Optional<User> getUserById(String userId) {
         return userRepository.findById(userId);
     }
+
+
+
 
 }

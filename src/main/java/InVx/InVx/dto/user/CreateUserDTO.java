@@ -7,13 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CreateUserDTO {
+
+
+
     @NotBlank(message = "Username cannot be blank")
     private String username;
-    @NotBlank(message = "Password cannot be blank")
-    private String password;
     @Email
     @NotBlank(message = "Email cannot be blank")
     private String email;
+    @NotBlank(message = "Password cannot be blank")
+    private String password;
     @NotBlank(message = "Date of birth cannot be blank")
     private String dateOfBirth;
     @NotBlank(message = "Firstname cannot be blank")
