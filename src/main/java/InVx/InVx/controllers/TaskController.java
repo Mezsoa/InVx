@@ -8,10 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/task")
@@ -22,7 +21,7 @@ public class TaskController {
 
 
     // Create a new task
-    @PostMapping("/post")
+    @PostMapping("/create")
     public ResponseEntity<?> createTask(@Valid @RequestBody Task task) {
         Task createdTask = taskService.createTask(task);
         try {
@@ -30,5 +29,37 @@ public class TaskController {
         }  catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+    @GetMapping("/find/all")
+    public ResponseEntity<?> getAllTasks() {
+        try {
+            return ResponseEntity.ok(taskService.getAllTasks());
+        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<?> getOneTask(@Valid @PathVariable String id) {
+     try {
+          return ResponseEntity.ok(taskService.getTaskById(id));
+     }  catch (EntityNotFoundException e) {
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+     }
+    }
+
+    @PutMapping("/update/{id}")
+    public Task updateTask(@PathVariable String id, @Valid @RequestBody Task task) {
+        return taskService.updateTask(task);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTask(@Valid @PathVariable String id) {
+        try {
+             taskService.deleteTask(id);
+        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        return ResponseEntity.ok().body("Task deleted successfully");
     }
 }

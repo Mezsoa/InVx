@@ -1,6 +1,7 @@
 package InVx.InVx.models;
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +23,12 @@ public class Task {
     private String priority;
     @CreatedDate
     private Date createdAt = new Date();
+//    @CreatedDate
+//    private Date updatedAt = new Date();
+//    @CreatedDate
+//    private Date deletedAt = new Date();
+
+
 
     public Task() {
     }
@@ -68,4 +75,20 @@ public class Task {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+//    public Date getUpdatedAt() {
+//        return updatedAt;
+//    }
+//
+//    public void setUpdatedAt(Date updatedAt) {
+//        this.updatedAt = updatedAt;
+//    }
+//
+//    public Date getDeletedAt() {
+//        return deletedAt;
+//    }
+//
+//    public void setDeletedAt(Date deletedAt) {
+//        this.deletedAt = deletedAt;
+//    }
 }

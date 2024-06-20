@@ -4,13 +4,11 @@ package InVx.InVx.controllers;
 import InVx.InVx.exceptions.EntityNotFoundException;
 import InVx.InVx.models.User;
 import InVx.InVx.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -33,7 +31,7 @@ public class UserController {
         }
     }
     // Gets one user by its user ID
-    @GetMapping("/find-one/{userId}")
+    @GetMapping("/find/{Id}")
     public ResponseEntity<User> getUserById(
             @PathVariable("userId") String userId) {
         Optional<User> user = userService.getUserById(userId);
@@ -42,8 +40,21 @@ public class UserController {
     }
 
 
+    @PutMapping("/update")
+    public User updateUser(@PathVariable String id, @Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
 
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable String id) {
+        try {
+            userService.deleteUser(id);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        return ResponseEntity.ok().body("User deleted successfully");
+    }
 
 
 
