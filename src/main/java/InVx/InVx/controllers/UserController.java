@@ -31,16 +31,17 @@ public class UserController {
         }
     }
     // Gets one user by its user ID
-    @GetMapping("/find/{Id}")
-    public ResponseEntity<User> getUserById(
-            @PathVariable("userId") String userId) {
-        Optional<User> user = userService.getUserById(userId);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/find/{id}")
+    public ResponseEntity<?> getUserById(@Valid @PathVariable String id) {
+        try {
+            return ResponseEntity.ok(userService.getUserById(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public User updateUser(@PathVariable String id, @Valid @RequestBody User user) {
         return userService.updateUser(user);
     }

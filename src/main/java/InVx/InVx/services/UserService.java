@@ -15,19 +15,15 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-
-
-
     // Gets all user accounts
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     // Gets one user account
-    public Optional<User> getUserById(String userId) {
-        return userRepository.findById(userId);
+    public Optional<User> getUserById(String id) {
+        return userRepository.findById(id);
     }
-
 
     // Finds the user if excisted and updates
     public User updateUser(User user) {

@@ -47,7 +47,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     // sign in
-    @PostMapping("/signin")
+    @PostMapping("/sign/in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequest signinRequest, HttpServletResponse response){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
@@ -75,7 +75,7 @@ public class AuthController {
 
 
     // sign up/register new user
-    @PostMapping("/signup")
+    @PostMapping("/sign/up")
     public ResponseEntity<?> signupUser(@Valid @RequestBody SignupRequest signupRequest){
         if (userRepository.existsByUsername((signupRequest.getUsername()))) {
             return ResponseEntity
@@ -124,7 +124,7 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
     }
 
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logoutUser () {
         ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Logged out successfully");
