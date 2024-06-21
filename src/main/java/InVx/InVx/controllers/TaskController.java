@@ -32,7 +32,7 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/find/all")
     public ResponseEntity<?> getAllTasks() {
         try {
@@ -41,7 +41,7 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/find/{id}")
     public ResponseEntity<?> getOneTask(@Valid @PathVariable String id) {
      try {
@@ -50,12 +50,12 @@ public class TaskController {
          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
      }
     }
-
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public Task updateTask(@PathVariable String id, @Valid @RequestBody Task task) {
         return taskService.updateTask(task);
     }
-
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTask(@Valid @PathVariable String id) {
         try {
