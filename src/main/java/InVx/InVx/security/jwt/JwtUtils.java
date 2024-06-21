@@ -27,7 +27,7 @@ public class JwtUtils {
     private String jwtSecret;
     @Value("8640000")
     private int jwtExpirationMs;
-    @Value("kaka")
+    @Value("InVx")
     private String jwtCookie;
 
     public String getJwtFromCookie(HttpServletRequest request){

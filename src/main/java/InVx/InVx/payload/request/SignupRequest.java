@@ -15,7 +15,7 @@ public class SignupRequest {
     private String username;
     @NotBlank
     @Email
-    @Size(min = 11, max = 20)
+    @Size(min = 11, max = 40)
     private String email;
     @NotBlank
     @Size(min = 4, max = 20)
@@ -28,11 +28,11 @@ public class SignupRequest {
     private String lastName;
     private Set<String> roles;
 
-    public @NotBlank @Email @Size(min = 11, max = 20) String getEmail() {
+    public @NotBlank @Email @Size(min = 11, max = 40) String getEmail() {
         return email;
     }
 
-    public void setEmail(@NotBlank @Email @Size(min = 11, max = 20) String email) {
+    public void setEmail(@NotBlank @Email @Size(min = 11, max = 40) String email) {
         this.email = email;
     }
 
