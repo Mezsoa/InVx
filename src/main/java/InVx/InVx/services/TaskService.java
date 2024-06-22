@@ -3,24 +3,31 @@ package InVx.InVx.services;
 
 
 import InVx.InVx.models.Task;
+import InVx.InVx.models.User;
 import InVx.InVx.repositories.TaskRepository;
+import InVx.InVx.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TaskService {
 
-
     @Autowired
     private TaskRepository taskRepository;
-
+    @Autowired
+    private UserRepository userRepository;
 
     public Task createTask(Task task) {
+        User findUser = userRepository.findById(task.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Task newTask = new Task();
+        newTask.setUser(findUser);
         newTask.setTitle(task.getTitle());
         newTask.setDescription(task.getDescription());
         newTask.setPriority(task.getPriority());
@@ -56,12 +63,6 @@ public class TaskService {
             return taskRepository.save(exisistingTask);
         }).orElseThrow(() -> new RuntimeException("Task was not found"));
     }
-
-//    public Task deleteTask(String id) {
-//        taskRepository.deleteById(id);
-//        return taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task was not found"));
-//    }
-
 
     public ResponseEntity<?> deleteTask(String id) {
         taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task was not found"));

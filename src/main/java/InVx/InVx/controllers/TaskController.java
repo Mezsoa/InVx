@@ -3,6 +3,7 @@ package InVx.InVx.controllers;
 
 import InVx.InVx.exceptions.EntityNotFoundException;
 import InVx.InVx.models.Task;
+import InVx.InVx.models.User;
 import InVx.InVx.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
