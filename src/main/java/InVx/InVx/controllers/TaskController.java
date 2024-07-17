@@ -5,6 +5,7 @@ import InVx.InVx.exceptions.EntityNotFoundException;
 import InVx.InVx.models.Task;
 import InVx.InVx.models.User;
 import InVx.InVx.services.TaskService;
+import InVx.InVx.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+//@CrossOrigin(origins = "http://localhost:8080/", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
@@ -21,14 +22,16 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private UserService userService;
+
 
     // Create a new task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createTask(@Valid @RequestBody Task task) {
-        Task createdTask = taskService.createTask(task);
         try {
-            return ResponseEntity.ok(createdTask);
+            return ResponseEntity.ok(taskService.createTask(task));
         }  catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

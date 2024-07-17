@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -22,17 +23,19 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
 
-    public Task createTask(Task task) {
-        User findUser = userRepository.findById(task.getUser().getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+
+    public ResponseEntity<?> createTask(Task task) {
 
         Task newTask = new Task();
-        newTask.setUser(findUser);
+        newTask.setUserId(task.getUserId());
         newTask.setTitle(task.getTitle());
         newTask.setDescription(task.getDescription());
         newTask.setPriority(task.getPriority());
         newTask.setStatus(task.getStatus());
-        return taskRepository.save(newTask);
+        taskRepository.save(newTask);
+        return ResponseEntity.ok("Task created successfully");
     }
 
     // Lists all the tasks created

@@ -12,8 +12,14 @@ import java.util.Date;
 @Document(collection = "tasks")
 public class Task {
 
+
+
     @Id
     private String id;
+
+
+
+    private String userId;
     @NotBlank(message = "title can not be empty")
     private String title;
     private String description;
@@ -30,9 +36,11 @@ public class Task {
     public Task() {
     }
 
-
     public String getId() {
         return id;
+    }
+    public String getUserId() {
+        return userId;
     }
     public @NotBlank(message = "title can not be empty") String getTitle() {
         return title;
@@ -53,6 +61,12 @@ public class Task {
         return user;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
     public void setUser(User user) {
         this.user = user;
     }
