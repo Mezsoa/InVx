@@ -3,6 +3,7 @@ package InVx.InVx.controllers;
 
 import InVx.InVx.exceptions.EntityNotFoundException;
 import InVx.InVx.models.User;
+import InVx.InVx.payload.user.UpdateUser;
 import InVx.InVx.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,15 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public User updateUser(@PathVariable String id, @Valid @RequestBody User user) {
-        return userService.updateUser(user);
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUser updateUser, @PathVariable("id") String id) {
+        try {
+            User updatedUser = userService.updateUser(id, updateUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
+
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")

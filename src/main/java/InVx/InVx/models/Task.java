@@ -22,9 +22,6 @@ public class Task {
     private String userId;
     @NotBlank(message = "title can not be empty")
     private String title;
-    private String description;
-    private String status;
-    private String priority;
     @CreatedDate
     private Date createdAt = new Date();
     // I choose to go with nested representation due to flexibility and clarity.
@@ -45,15 +42,6 @@ public class Task {
     public @NotBlank(message = "title can not be empty") String getTitle() {
         return title;
     }
-    public String getDescription() {
-        return description;
-    }
-    public String getStatus() {
-        return status;
-    }
-    public String getPriority() {
-        return priority;
-    }
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -72,15 +60,6 @@ public class Task {
     }
     public void setTitle(@NotBlank(message = "title can not be empty") String title) {
         this.title = title;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    public void setPriority(String priority) {
-        this.priority = priority;
     }
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;

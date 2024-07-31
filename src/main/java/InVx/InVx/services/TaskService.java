@@ -31,9 +31,6 @@ public class TaskService {
         Task newTask = new Task();
         newTask.setUserId(task.getUserId());
         newTask.setTitle(task.getTitle());
-        newTask.setDescription(task.getDescription());
-        newTask.setPriority(task.getPriority());
-        newTask.setStatus(task.getStatus());
         taskRepository.save(newTask);
         return ResponseEntity.ok("Task created successfully");
     }
@@ -53,15 +50,6 @@ public class TaskService {
         return taskRepository.findById(task.getId()).map(exisistingTask -> {
             if (task.getTitle() != null) {
                 exisistingTask.setTitle(task.getTitle());
-            }
-            if (task.getDescription() != null) {
-                exisistingTask.setDescription(task.getDescription());
-            }
-            if (task.getPriority() != null) {
-                exisistingTask.setPriority(task.getPriority());
-            }
-            if (task.getStatus() != null) {
-                exisistingTask.setStatus(task.getStatus());
             }
             return taskRepository.save(exisistingTask);
         }).orElseThrow(() -> new RuntimeException("Task was not found"));
