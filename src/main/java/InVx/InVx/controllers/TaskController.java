@@ -4,6 +4,8 @@ package InVx.InVx.controllers;
 import InVx.InVx.exceptions.EntityNotFoundException;
 import InVx.InVx.models.Task;
 import InVx.InVx.models.User;
+import InVx.InVx.payload.task.CreateTaskDTO;
+import InVx.InVx.payload.task.UpdateTaskDTO;
 import InVx.InVx.services.TaskService;
 import InVx.InVx.services.UserService;
 import jakarta.validation.Valid;
@@ -22,29 +24,30 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private UserService userService;
-
-
-    // Create a new task
+    // Add a new task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<?> createTask(@Valid @RequestBody Task task) {
+    public ResponseEntity<?> createTask(@Valid @RequestBody CreateTaskDTO createTaskDTO) {
         try {
-            return ResponseEntity.ok(taskService.createTask(task));
-        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.ok(taskService.createTask(createTaskDTO));
+        }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    // List all own task
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/find/all")
-    public ResponseEntity<?> getAllTasks() {
-        try {
-            return ResponseEntity.ok(taskService.getAllTasks());
-        }  catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    @GetMapping("/find/all/{userId}")
+    public ResponseEntity<?> getAllTasks(@PathVariable("userId") String userId) {
+        List<Task> foundTasks = taskService.getAllTasks(userId);
+        if (foundTasks.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No tasks found");
+        } else {
+            return ResponseEntity.ok(foundTasks);
         }
     }
+
+    // list one task by task id
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/find/{id}")
     public ResponseEntity<?> getOneTask(@Valid @PathVariable String id) {
@@ -54,11 +57,17 @@ public class TaskController {
          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
      }
     }
+
+    // update a task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @PutMapping("/update/{id}")
-    public Task updateTask(@PathVariable String id, @Valid @RequestBody Task task) {
-        return taskService.updateTask(task);
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<?> updateTask(@PathVariable("taskId") String taskId,
+                                        @RequestBody UpdateTaskDTO updateTaskDTO) {
+        Task UpdatedTask = taskService.updateTask(taskId, updateTaskDTO);
+        return ResponseEntity.ok(UpdatedTask);
     }
+
+    // delete a task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTask(@Valid @PathVariable String id) {

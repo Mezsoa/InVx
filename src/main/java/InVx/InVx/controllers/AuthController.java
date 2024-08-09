@@ -66,13 +66,20 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        // jwt utan cookie
+       /* return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles));*/
+
+        // Jwt with cookie
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         roles));
     }
-
 
     // sign up/register new user
     @PostMapping("/sign/up")
@@ -87,9 +94,7 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: email already exists!"));
         }
-
         // create user account
-
         User user = new User(signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 encoder.encode(signupRequest.getPassword()),
@@ -110,6 +115,11 @@ public class AuthController {
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found"));
                         roles.add(adminRole);
                     }
+                    case "mod" -> {
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role not found"));
+                        roles.add(modRole);
+                    }
                     default -> {
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role not found"));
@@ -120,13 +130,15 @@ public class AuthController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
     }
 
+    //Logging out
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser () {
+        // Generate a new cookie that is empty
         ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
+        // Adding and sending the empty cookie to the webbrowser.
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body("Logged out successfully");
     }
 }

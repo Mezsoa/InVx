@@ -13,11 +13,10 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
     @Autowired
     UserRepository userRepository;
     @Autowired
-    private PasswordEncoder encoder;
+    PasswordEncoder encoder;
 
     // Gets all user accounts
     public List<User> getAllUsers() {
@@ -25,19 +24,18 @@ public class UserService {
     }
 
     // Gets one user account
-    public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
+    public Optional<User> getUserById(String userId) {
+        return userRepository.findById(userId);
     }
 
     // Finds the user if excisted and updates
-    public User updateUser(String id, UpdateUser updateUserDTO) {
+    public User updateUser(String userId, UpdateUser updateUserDTO) {
 
         if (updateUserDTO.getPassword() != null) {
             String encodedPassword = encoder.encode(updateUserDTO.getPassword());
             updateUserDTO.setPassword(encodedPassword);
         }
-
-        return userRepository.findById(id)
+        return userRepository.findById(userId)
                 .map(existingUser -> {
                     Optional.ofNullable(updateUserDTO.getPassword()).ifPresent(existingUser::setPassword);
                     Optional.ofNullable(updateUserDTO.getEmail()).ifPresent(existingUser::setEmail);
@@ -46,39 +44,15 @@ public class UserService {
 
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new EntityNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
     }
-//    public User updateUser(User user) {
-//        return userRepository.findById(user.getId()).map(existingUser -> {
-//            if (user.getUsername() != null) {
-//                existingUser.setUsername(user.getUsername());
-//            }
-//            if (user.getEmail() != null) {
-//                existingUser.setEmail(user.getEmail());
-//            }
-//            if (user.getPassword() != null) {
-//                existingUser.setPassword(user.getPassword());
-//            }
-//            if (user.getDateOfBirth() != null) {
-//                existingUser.setDateOfBirth(user.getDateOfBirth());
-//            }
-//            if (user.getFirstName() != null) {
-//                existingUser.setFirstName(user.getFirstName());
-//            }
-//            if (user.getLastName() != null) {
-//                existingUser.setLastName(user.getLastName());
-//            }
-//            return userRepository.save(existingUser);
-//        }).orElseThrow(() -> new RuntimeException("User not found"));
-//    }
 
     // Deletes one user by id
-    public ResponseEntity<?> deleteUser(String id) {
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.deleteById(id);
+    public ResponseEntity<?> deleteUser(String userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        userRepository.deleteById(userId);
         return ResponseEntity.ok().body("User deleted successfully");
     }
-
-
-
 }

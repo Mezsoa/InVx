@@ -16,17 +16,15 @@ public class Task {
 
     @Id
     private String id;
-
-
-
     private String userId;
+
     @NotBlank(message = "title can not be empty")
     private String title;
+
     @CreatedDate
     private Date createdAt = new Date();
     // I choose to go with nested representation due to flexibility and clarity.
-    @DBRef
-    private User user;
+
 
 
 
@@ -45,18 +43,13 @@ public class Task {
     public Date getCreatedAt() {
         return createdAt;
     }
-    public User getUser() {
-        return user;
-    }
+
 
     public void setId(String id) {
         this.id = id;
     }
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-    public void setUser(User user) {
-        this.user = user;
     }
     public void setTitle(@NotBlank(message = "title can not be empty") String title) {
         this.title = title;

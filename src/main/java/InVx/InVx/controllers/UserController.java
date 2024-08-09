@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
-
     @Autowired
     private UserService userService;
 
@@ -37,9 +36,9 @@ public class UserController {
     // Gets one user by its user ID
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/find/{id}")
-    public ResponseEntity<?> getUserById(@Valid @PathVariable String id) {
+    public ResponseEntity<?> getUserById(@Valid @PathVariable String userId) {
         try {
-            return ResponseEntity.ok(userService.getUserById(id));
+            return ResponseEntity.ok(userService.getUserById(userId));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -56,28 +55,13 @@ public class UserController {
         }
     }
 
-
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteUser(@Valid @PathVariable String id) {
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<?> deleteUser(@Valid @PathVariable("userId") String userId) {
         try {
-            userService.deleteUser(id);
+            return userService.deleteUser(userId);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-        return ResponseEntity.ok().body("User deleted successfully");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
