@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -54,6 +55,23 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    // Get the points on a user by user id
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @GetMapping("/points/{userId}")
+    public ResponseEntity<?> getUserPoints(@PathVariable("userId") String userId) {
+        try {
+            User user = userService.getUserById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
+            return ResponseEntity.ok(Collections.singletonMap("points", user.getPoints()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+
+
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @DeleteMapping("/delete/{userId}")
