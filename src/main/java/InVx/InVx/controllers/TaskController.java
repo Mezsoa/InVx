@@ -6,6 +6,7 @@ import InVx.InVx.models.Task;
 import InVx.InVx.models.User;
 import InVx.InVx.payload.task.CreateTaskDTO;
 import InVx.InVx.payload.task.UpdateTaskDTO;
+import InVx.InVx.repositories.UserRepository;
 import InVx.InVx.services.TaskService;
 import InVx.InVx.services.UserService;
 import jakarta.validation.Valid;
@@ -23,6 +24,10 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    UserService userService;
+
 
     // Add a new task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

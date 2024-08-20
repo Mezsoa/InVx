@@ -47,6 +47,19 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
     }
 
+    public void updateUserPoints(String userId, Integer points) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("User with id " + userId + " not found"));
+        user.setPoints(user.getPoints() + points);
+        userRepository.save(user);
+    }
+
+
+
+
+
+
     // Deletes one user by id
     public ResponseEntity<?> deleteUser(String userId) {
         userRepository.findById(userId)
@@ -55,4 +68,6 @@ public class UserService {
         userRepository.deleteById(userId);
         return ResponseEntity.ok().body("User deleted successfully");
     }
+
+
 }

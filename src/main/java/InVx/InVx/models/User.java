@@ -41,6 +41,11 @@ public class User {
     @Size(max = 20)
     private String lastName;
 
+    private int points;
+
+
+
+
     // roles
     private Set<Role> roles = new HashSet<>();
 
@@ -120,5 +125,13 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }

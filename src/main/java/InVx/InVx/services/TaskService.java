@@ -20,7 +20,7 @@ public class TaskService {
     @Autowired
     TaskRepository taskRepository;
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
 
     public ResponseEntity<?> createTask(CreateTaskDTO createTaskDTO) {
@@ -38,9 +38,17 @@ public class TaskService {
     }
 
     // Gets a task by the task id
-    public Optional<Task> getTaskById(String id) {
-        return taskRepository.findById(id);
+    // Här var ja tvungen att byta till att kasta ett undantag istället för att köra (Optional där ett objekt kan vara tomt).
+    public Task getTaskById(String taskId) {
+        return taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " was not found"));
     }
+
+
+//    public Optional<Task> getTaskById(String id) {
+//        return taskRepository.findById(id);
+//    }
+
 
     // update a task
     public Task updateTask(String taskId, UpdateTaskDTO updateTaskDTO) {
@@ -49,15 +57,27 @@ public class TaskService {
             return taskRepository.save(existingTask);
         }).orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " not found"));
     }
-
+    // Radera en task och uppdatera användarens poäng
     public ResponseEntity<?> deleteTask(String taskId) {
         if (taskRepository.existsById(taskId)) {
+            Task task = getTaskById(taskId);
             taskRepository.deleteById(taskId);
+            userService.updateUserPoints(task.getUserId(), 1);
             return ResponseEntity.ok("Task was deleted successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
     }
+
+
+//    public void deleteTask(String id) {
+//        Task task = getTaskById(id);
+//        taskRepository.deleteById(id);
+//
+//        // Uppdatera användarens poäng
+//        userService.updateUserPoints(task.getUserId(), 1);  // Lägg till 1 poäng
+//
+
 
 }
 
