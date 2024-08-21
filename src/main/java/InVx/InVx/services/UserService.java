@@ -56,10 +56,6 @@ public class UserService {
     }
 
 
-
-
-
-
     // Deletes one user by id
     public ResponseEntity<?> deleteUser(String userId) {
         userRepository.findById(userId)
