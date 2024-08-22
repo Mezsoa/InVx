@@ -25,10 +25,6 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    UserService userService;
-
-
     // Add a new task
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/create")
