@@ -1,14 +1,15 @@
 package InVx.InVx.payload.purchaseIcon;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class CreatePurchaseIcon {
     @NotBlank
     private String userId;
     @NotBlank
     private String iconTag;
-    @NotBlank
-    private int cellIdenx;
+    @NotNull
+    private int cellIndex;
 
     public @NotBlank String getUserId() {
         return userId;
@@ -28,12 +29,13 @@ public class CreatePurchaseIcon {
         this.iconTag = iconTag;
     }
 
-    @NotBlank
-    public int getCellIdenx() {
-        return cellIdenx;
+
+    @NotNull
+    public int getCellIndex() {
+        return cellIndex;
     }
 
-    public void setCellIdenx(@NotBlank int cellIdenx) {
-        this.cellIdenx = cellIdenx;
+    public void setCellIndex(@NotNull int cellIndex) {
+        this.cellIndex = cellIndex;
     }
 }

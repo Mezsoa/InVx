@@ -26,7 +26,7 @@ public class PurchaseIconService {
         PurchaseIcon newPurchaseIcon = new PurchaseIcon();
         newPurchaseIcon.setUserId(createPurchaseIcon.getUserId());
         newPurchaseIcon.setIconTag(createPurchaseIcon.getIconTag());
-        newPurchaseIcon.setCellIndex(createPurchaseIcon.getCellIdenx());
+        newPurchaseIcon.setCellIndex(createPurchaseIcon.getCellIndex());
         return purchaseIconRepository.save(newPurchaseIcon);
     }
 }

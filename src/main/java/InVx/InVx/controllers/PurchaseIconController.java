@@ -25,7 +25,7 @@ public class PurchaseIconController {
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<?> addPurchaseIcon(@RequestBody @Valid CreatePurchaseIcon createPurchaseIcon) {
+    public ResponseEntity<?> addPurchaseIcon(@RequestBody CreatePurchaseIcon createPurchaseIcon) {
         try {
             return ResponseEntity.ok(purchaseIconService.purchaseIcon(createPurchaseIcon));
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class PurchaseIconController {
 
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    @GetMapping("/find/all")
+    @GetMapping("/find/all/{userId}")
     public ResponseEntity<?> getAllPurchaseIcons(@PathVariable("userId") String userId) {
         List<PurchaseIcon> foundPurchasedIcons = purchaseIconService.getAllIcons(userId);
         if (foundPurchasedIcons.isEmpty()) {
