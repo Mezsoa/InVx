@@ -1,12 +1,26 @@
 package InVx.InVx.services;
-
 import InVx.InVx.models.PurchaseIcon;
-import InVx.InVx.payload.purchaseIcon.CreatePurchaseIcon;
-import InVx.InVx.repositories.PurchaseIconRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import InVx.InVx.payload.purchaseIcon.CreatePurchaseIcon;
+
+
+import InVx.InVx.repositories.PurchaseIconRepository;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.util.List;
+
 
 @Service
 public class PurchaseIconService {
@@ -14,19 +28,52 @@ public class PurchaseIconService {
     @Autowired
     PurchaseIconRepository purchaseIconRepository;
 
+    @Autowired
+    private GridFsOperations operations;
+    @Autowired
+    private GridFsTemplate template;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
 
-    // To find all bought icons by a user
-    public List<PurchaseIcon> getAllIcons(String userId) {
-        return purchaseIconRepository.findByUserId(userId);
+    // This is taken from stackoverflow and im not exactly sure how this works.....
+    // more then that it splits up the image in fs.shunks and fs.files.
+    public String addFile(MultipartFile upload, String userId, int cellIndex) throws IOException {
+
+        DBObject metadata = new BasicDBObject();
+        metadata.put("fileSize", upload.getSize());
+        metadata.put("userId", userId);              // Add userId
+        metadata.put("cellIndex", cellIndex);        // Add cellIndex
+        Object fileID = template.store(upload.getInputStream(), upload.getOriginalFilename(), upload.getContentType(), metadata);
+
+        // Storing the metadata in the purchaseicon collection aswell to ensure it sticks to the user
+        PurchaseIcon purchaseIcon = new PurchaseIcon(upload.getOriginalFilename(), cellIndex, userId, upload.getContentType(), String.valueOf(upload.getSize()), null);
+        purchaseIconRepository.save(purchaseIcon);
+        return fileID.toString();
     }
 
-    // Creating a new icon object.
-    public PurchaseIcon purchaseIcon(CreatePurchaseIcon createPurchaseIcon) {
-        PurchaseIcon newPurchaseIcon = new PurchaseIcon();
-        newPurchaseIcon.setUserId(createPurchaseIcon.getUserId());
-        newPurchaseIcon.setIconTag(createPurchaseIcon.getIconTag());
-        newPurchaseIcon.setCellIndex(createPurchaseIcon.getCellIndex());
-        return purchaseIconRepository.save(newPurchaseIcon);
+    public List<PurchaseIcon> getIconsByUserId(String userId) {
+        Query query = new Query(Criteria.where("userId").is(userId));
+        return mongoTemplate.find(query, PurchaseIcon.class);
+    }
+
+    // TO DOWNLOAD AN ICON
+
+    public PurchaseIcon downloadFile(String id) throws IOException {
+
+        GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
+
+        PurchaseIcon loadFile = new PurchaseIcon();
+
+        if (gridFSFile != null && gridFSFile.getMetadata() != null) {
+            loadFile.setIconTag(gridFSFile.getFilename());
+            loadFile.setFileType(gridFSFile.getMetadata().get("_contentType").toString());
+            loadFile.setFileSize(gridFSFile.getMetadata().get("fileSize").toString());
+            loadFile.setUserId(gridFSFile.getMetadata().get("userId").toString());  // Get userId
+            loadFile.setCellIndex((Integer) gridFSFile.getMetadata().get("cellIndex")); // Get cellIndex
+            loadFile.setFile(IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()));
+        }
+
+        return loadFile;
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.annotation.Collation;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
@@ -14,8 +15,10 @@ public class PurchaseIcon {
     @Id
     private String id;
     private String userId;
-    // EXAMPLE blue dragon egg or blue dragon.
     private String iconTag;
+    private String fileType;
+    private String fileSize;
+    private byte[] file;
     //Where/what index the icon is going to be place at inside the grid-cell in front-end
     private int cellIndex;
 
@@ -26,10 +29,13 @@ public class PurchaseIcon {
     public PurchaseIcon() {
     }
 
-    public PurchaseIcon(String iconTag, int cellIndex, String userId) {
+    public PurchaseIcon(String iconTag, int cellIndex, String userId,String fileType, String fileSize, byte[] file) {
         this.iconTag = iconTag;
         this.cellIndex = cellIndex;
         this.userId = userId;
+        this.fileType = fileType;
+        this.fileSize = fileSize;
+        this.file = file;
     }
 
     public Date getPurchaseDate() {
@@ -48,14 +54,6 @@ public class PurchaseIcon {
         this.cellIndex = cellIndex;
     }
 
-    public String getIconTag() {
-        return iconTag;
-    }
-
-    public void setIconTag(String iconTag) {
-        this.iconTag = iconTag;
-    }
-
     public String getUserId() {
         return userId;
     }
@@ -70,5 +68,37 @@ public class PurchaseIcon {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getIconTag() {
+        return iconTag;
+    }
+
+    public void setIconTag(String iconTag) {
+        this.iconTag = iconTag;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
     }
 }

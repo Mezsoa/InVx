@@ -62,23 +62,12 @@ public class TaskService {
         if (taskRepository.existsById(taskId)) {
             Task task = getTaskById(taskId);
             taskRepository.deleteById(taskId);
-            userService.updateUserPoints(task.getUserId(), 100); // set back to 1 for corrrect score value a user should get, 100 is set due to development mode
+            userService.updateUserPoints(task.getUserId(), 1); // set back to 1 for corrrect score value a user should get, 100 is set due to development mode
             return ResponseEntity.ok("Task was deleted successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
     }
-
-
-
-//    public void deleteTask(String id) {
-//        Task task = getTaskById(id);
-//        taskRepository.deleteById(id);
-//
-//        // Uppdatera användarens poäng
-//        userService.updateUserPoints(task.getUserId(), 1);  // Lägg till 1 poäng
-//
-
 
 }
 
