@@ -40,6 +40,18 @@ public class PurchaseIconController {
         return new ResponseEntity<>(icons, HttpStatus.OK);
     }
 
+    // Delete an icon from the database.
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> deleteIcon(@RequestParam String userId, @RequestParam int cellIndex) {
+        boolean isDeleted = purchaseIconService.deleteFile(userId, cellIndex);
+        if (isDeleted) {
+            return ResponseEntity.ok("Icon deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Icon not found or deletion failed.");
+        }
+    }
+
+
 
     // DOWNLOAD A FILE
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
