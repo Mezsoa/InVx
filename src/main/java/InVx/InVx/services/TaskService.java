@@ -9,6 +9,7 @@ import InVx.InVx.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +23,12 @@ public class TaskService {
     @Autowired
     UserService userService;
 
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public TaskService(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+
 
     public ResponseEntity<?> createTask(CreateTaskDTO createTaskDTO) {
       Task newTask = new Task();
@@ -29,7 +36,15 @@ public class TaskService {
       newTask.setTitle(createTaskDTO.getTitle());
 
       taskRepository.save(newTask);
-      return ResponseEntity.ok("Task was created successfully");
+
+        messagingTemplate.convertAndSendToUser(
+
+                newTask.getUserId(),
+                "/private",
+                "Good. Keep the promise to yourself!"
+        );
+
+        return ResponseEntity.ok("Task was created successfully");
     }
 
     // Lists all the tasks created of a user
@@ -44,12 +59,6 @@ public class TaskService {
                 .orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " was not found"));
     }
 
-
-//    public Optional<Task> getTaskById(String id) {
-//        return taskRepository.findById(id);
-//    }
-
-
     // update a task
     public Task updateTask(String taskId, UpdateTaskDTO updateTaskDTO) {
         return taskRepository.findById(taskId).map(existingTask -> {
@@ -57,12 +66,21 @@ public class TaskService {
             return taskRepository.save(existingTask);
         }).orElseThrow(() -> new EntityNotFoundException("Task with id " + taskId + " not found"));
     }
+
     // Radera en task och uppdatera användarens poäng
     public ResponseEntity<?> deleteTask(String taskId) {
         if (taskRepository.existsById(taskId)) {
             Task task = getTaskById(taskId);
             taskRepository.deleteById(taskId);
-            userService.updateUserPoints(task.getUserId(), 1); // set back to 1 for corrrect score value a user should get, 100 is set due to development mode
+            userService.updateUserPoints(task.getUserId(), 5); // set back to 1 for corrrect score value a user should get, 100 is set due to development mode
+
+            messagingTemplate.convertAndSendToUser(
+
+                    task.getUserId(),
+                    "/private",
+                    "You Are The Champ! Keep this flow of success!"
+            );
+
             return ResponseEntity.ok("Task was deleted successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");

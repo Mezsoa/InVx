@@ -14,7 +14,7 @@ public class UserFeedback {
     @Id
     private String id;
     private String userId;
-
+    private String username;
     @NotBlank
     private String description;
     @NotBlank
@@ -64,5 +64,13 @@ public class UserFeedback {
 
     public void setCategory(@NotBlank String category) {
         this.category = category;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUserName(String username) {
+        this.username = username;
     }
 }

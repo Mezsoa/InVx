@@ -14,9 +14,10 @@ public class UserFeedbackService {
     @Autowired
     UserFedbackRepository userFedbackRepository;
 
-    public UserFeedback save(CreateUserFeedback createUserFeedback) {
+    public UserFeedback createFeedback(CreateUserFeedback createUserFeedback) {
         UserFeedback userFeedback = new UserFeedback();
-        userFeedback.setUserId(createUserFeedback.getUsername());
+        userFeedback.setUserId(createUserFeedback.getUserId());
+        userFeedback.setUserName(createUserFeedback.getUsername());
         userFeedback.setDescription(createUserFeedback.getMessage());
         userFeedback.setCategory(createUserFeedback.getCategory());
         return userFedbackRepository.save(userFeedback);

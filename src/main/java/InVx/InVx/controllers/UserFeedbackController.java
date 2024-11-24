@@ -5,6 +5,7 @@ import InVx.InVx.payload.userFeedback.CreateUserFeedback;
 import InVx.InVx.services.UserFeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class UserFeedbackController {
     @PostMapping("/create")
     public ResponseEntity<?> createFeedback(@Valid @RequestBody CreateUserFeedback createUserFeedback) {
         try {
-            return ResponseEntity.ok(userFeedbackService.save(createUserFeedback));
+            return ResponseEntity.ok(userFeedbackService.createFeedback(createUserFeedback));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

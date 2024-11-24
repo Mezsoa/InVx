@@ -2,11 +2,13 @@ package InVx.InVx.payload.userFeedback;
 
 public class CreateUserFeedback {
     private String username;
+    private String userId;
     private String message;
     private String category;
 
-    public CreateUserFeedback(String username, String message, String category) {
+    public CreateUserFeedback(String username, String userId, String message, String category) {
         this.username = username;
+        this.userId = userId;
         this.message = message;
         this.category = category;
     }
@@ -17,6 +19,14 @@ public class CreateUserFeedback {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getMessage() {

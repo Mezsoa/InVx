@@ -49,20 +49,6 @@ public class PurchaseIconService {
 
     // This is taken from stackoverflow and im not exactly sure how this works.....
     // more then that it splits up the image in fs.shunks and fs.files.
-//    public String addFile(MultipartFile upload, String userId, int cellIndex) throws IOException {
-//
-//        DBObject metadata = new BasicDBObject();
-//        metadata.put("fileSize", upload.getSize());
-//        metadata.put("userId", userId);              // Add userId
-//        metadata.put("cellIndex", cellIndex);        // Add cellIndex
-//        Object fileID = template.store(upload.getInputStream(), upload.getOriginalFilename(), upload.getContentType(), metadata);
-//
-//        // Storing the metadata in the purchaseicon collection aswell to ensure it sticks to the user
-//        PurchaseIcon purchaseIcon = new PurchaseIcon(upload.getOriginalFilename(), cellIndex, userId, upload.getContentType(), String.valueOf(upload.getSize()), null);
-//        purchaseIconRepository.save(purchaseIcon);
-//        return fileID.toString();
-//    }
-
     public String addFile(MultipartFile upload, String userId, int cellIndex) throws IOException {
 
         // 1. Check if an icon already exists for this cell and user
@@ -92,12 +78,12 @@ public class PurchaseIconService {
         // 4. Save metadata in the PurchaseIcon collection
         PurchaseIcon purchaseIcon = new PurchaseIcon(upload.getOriginalFilename(), cellIndex, userId, upload.getContentType(), String.valueOf(upload.getSize()), null);
         purchaseIconRepository.save(purchaseIcon);
-        // skicka notis till högsta budgivare
+
         messagingTemplate.convertAndSendToUser(
 
                 userId.toString(),
                 "/private",
-                "You have successfully bought a new dragon " + purchaseIcon.getIconTag()
+                "Congrats! dragon owner"
         );
 
         return fileID.toString();
@@ -131,21 +117,15 @@ public class PurchaseIconService {
         }
     }
 
-
-
     public List<PurchaseIcon> getIconsByUserId(String userId) {
         Query query = new Query(Criteria.where("userId").is(userId));
         return mongoTemplate.find(query, PurchaseIcon.class);
     }
 
     // TO DOWNLOAD AN ICON
-
     public PurchaseIcon downloadFile(String id) throws IOException {
-
         GridFSFile gridFSFile = template.findOne(new Query(Criteria.where("_id").is(id)));
-
         PurchaseIcon loadFile = new PurchaseIcon();
-
         if (gridFSFile != null && gridFSFile.getMetadata() != null) {
             loadFile.setIconTag(gridFSFile.getFilename());
             loadFile.setFileType(gridFSFile.getMetadata().get("_contentType").toString());
@@ -154,7 +134,6 @@ public class PurchaseIconService {
             loadFile.setCellIndex((Integer) gridFSFile.getMetadata().get("cellIndex")); // Get cellIndex
             loadFile.setFile(IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()));
         }
-
         return loadFile;
     }
 }
